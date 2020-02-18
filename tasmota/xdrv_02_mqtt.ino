@@ -804,9 +804,14 @@ void MqttCheck(void)
 
 /*********************************************************************************************\
  * Commands
+\*********************************************************************************************/
+
+#if defined(USE_MQTT_TLS) && !defined(USE_MQTT_TLS_CA_CERT)
+void CmndMqttFingerprint(void)
 {
   if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= 2))
   {
+    char fingerprint[60];
     if ((XdrvMailbox.data_len > 0) && (XdrvMailbox.data_len < sizeof(fingerprint)))
     {
       strlcpy(fingerprint, (SC_CLEAR == Shortcut()) ? "" : (SC_DEFAULT == Shortcut()) ? (1 == XdrvMailbox.index) ? MQTT_FINGERPRINT1 : MQTT_FINGERPRINT2 : XdrvMailbox.data, sizeof(fingerprint));
@@ -887,17 +892,24 @@ void CmndMqttRetry(void)
 
 void CmndStateText(void)
 {
-  if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= MAX_STATE_TEXT)) {
-    if (!XdrvMailbox.usridx) {
+  if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= MAX_STATE_TEXT))
+  {
+    if (!XdrvMailbox.usridx)
+    {
       ResponseCmndAll(SET_STATE_TXT1, MAX_STATE_TEXT);
-    } else {
-      if (XdrvMailbox.data_len > 0) {
-        for (uint32_t i = 0; i <= XdrvMailbox.data_len; i++) {
-          if (XdrvMailbox.data[i] == ' ') XdrvMailbox.data[i] = '_';
+    }
+    else
+    {
+      if (XdrvMailbox.data_len > 0)
+      {
+        for (uint32_t i = 0; i <= XdrvMailbox.data_len; i++)
+        {
+          if (XdrvMailbox.data[i] == ' ')
+            XdrvMailbox.data[i] = '_';
         }
-        SettingsUpdateText(SET_STATE_TXT1 + XdrvMailbox.index -1, XdrvMailbox.data);
+        SettingsUpdateText(SET_STATE_TXT1 + XdrvMailbox.index - 1, XdrvMailbox.data);
       }
-      ResponseCmndIdxChar(GetStateText(XdrvMailbox.index -1));
+      ResponseCmndIdxChar(GetStateText(XdrvMailbox.index - 1));
     }
   }
 }
@@ -936,36 +948,46 @@ void CmndFullTopic(void)
 
 void CmndPrefix(void)
 {
-  if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= MAX_MQTT_PREFIXES)) {
-    if (!XdrvMailbox.usridx) {
+  if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= MAX_MQTT_PREFIXES))
+  {
+    if (!XdrvMailbox.usridx)
+    {
       ResponseCmndAll(SET_MQTTPREFIX1, MAX_MQTT_PREFIXES);
-    } else {
-      if (XdrvMailbox.data_len > 0) {
+    }
+    else
+    {
+      if (XdrvMailbox.data_len > 0)
+      {
         MakeValidMqtt(0, XdrvMailbox.data);
-        SettingsUpdateText(SET_MQTTPREFIX1 + XdrvMailbox.index -1,
-          (SC_DEFAULT == Shortcut()) ? (1==XdrvMailbox.index) ? SUB_PREFIX : (2==XdrvMailbox.index) ? PUB_PREFIX : PUB_PREFIX2 : XdrvMailbox.data);
+        SettingsUpdateText(SET_MQTTPREFIX1 + XdrvMailbox.index - 1,
+                           (SC_DEFAULT == Shortcut()) ? (1 == XdrvMailbox.index) ? SUB_PREFIX : (2 == XdrvMailbox.index) ? PUB_PREFIX : PUB_PREFIX2 : XdrvMailbox.data);
         restart_flag = 2;
       }
-      ResponseCmndIdxChar(SettingsText(SET_MQTTPREFIX1 + XdrvMailbox.index -1));
+      ResponseCmndIdxChar(SettingsText(SET_MQTTPREFIX1 + XdrvMailbox.index - 1));
     }
   }
 }
 
 void CmndPublish(void)
 {
-  if (XdrvMailbox.data_len > 0) {
+  if (XdrvMailbox.data_len > 0)
+  {
     char *payload_part;
     char *mqtt_part = strtok_r(XdrvMailbox.data, " ", &payload_part);
-    if (mqtt_part) {
+    if (mqtt_part)
+    {
       char stemp1[TOPSZ];
       strlcpy(stemp1, mqtt_part, sizeof(stemp1));
-      if ((payload_part != nullptr) && strlen(payload_part)) {
+      if ((payload_part != nullptr) && strlen(payload_part))
+      {
         strlcpy(mqtt_data, payload_part, sizeof(mqtt_data));
-      } else {
+      }
+      else
+      {
         mqtt_data[0] = '\0';
       }
       MqttPublish(stemp1, (XdrvMailbox.index == 2));
-//      ResponseCmndDone();
+      //      ResponseCmndDone();
       mqtt_data[0] = '\0';
     }
   }
