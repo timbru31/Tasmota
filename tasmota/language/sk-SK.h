@@ -504,8 +504,10 @@
 
 //xsns_35_tx20.ino
 #define D_TX20_WIND_DIRECTION "Smer vetra"
+#define D_TX20_WIND_DEGREES "Uhol vetra"
 #define D_TX20_WIND_SPEED "Rýchlosť vetra"
 #define D_TX20_WIND_SPEED_AVG "Priemerná rýchlosť vetra"
+#define D_TX20_WIND_SPEED_MIN "Minimálna rýchlosť vetra"
 #define D_TX20_WIND_SPEED_MAX "Maximálna rýchlosť vetra"
 #define D_TX20_NORTH "S"
 #define D_TX20_EAST "V"
@@ -564,7 +566,7 @@
 #define D_SENSOR_TM1638_STB    "TM16 STB"
 #define D_SENSOR_HX711_SCK     "HX711 SCK"
 #define D_SENSOR_HX711_DAT     "HX711 DAT"
-#define D_SENSOR_TX20_TX       "TX20"
+#define D_SENSOR_TX2X_TX       "TX2x"
 #define D_SENSOR_RFSEND        "RFSend"
 #define D_SENSOR_RFRECV        "RFrecv"
 #define D_SENSOR_TUYA_TX       "Tuya Tx"

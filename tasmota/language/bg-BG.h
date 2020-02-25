@@ -504,8 +504,10 @@
 
 //xsns_35_tx20.ino
 #define D_TX20_WIND_DIRECTION "Посока на вятъра"
+#define D_TX20_WIND_DEGREES "Степени на вятъра"
 #define D_TX20_WIND_SPEED "Скорост на вятъра"
 #define D_TX20_WIND_SPEED_AVG "Средна скорост на вятъра"
+#define D_TX20_WIND_SPEED_MIN "Мини. скорост на вятъра"
 #define D_TX20_WIND_SPEED_MAX "Макс. скорост на вятъра"
 #define D_TX20_NORTH "С"
 #define D_TX20_EAST "И"
@@ -564,7 +566,7 @@
 #define D_SENSOR_TM1638_STB    "TM16 STB"
 #define D_SENSOR_HX711_SCK     "HX711 SCK"
 #define D_SENSOR_HX711_DAT     "HX711 DAT"
-#define D_SENSOR_TX20_TX       "TX20"
+#define D_SENSOR_TX2X_TX       "TX2x"
 #define D_SENSOR_RFSEND        "RFSend"
 #define D_SENSOR_RFRECV        "RFrecv"
 #define D_SENSOR_TUYA_TX       "Tuya Tx"

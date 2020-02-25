@@ -30,6 +30,9 @@ const char kTasmotaCommands[] PROGMEM = "|"  // No prefix
 #ifdef USE_I2C
   D_CMND_I2CSCAN "|" D_CMND_I2CDRIVER "|"
 #endif
+#ifdef USE_DEVICE_GROUPS
+  D_CMND_DEVGROUP_SHARE "|"
+#endif  // USE_DEVICE_GROUPS
   D_CMND_SENSOR "|" D_CMND_DRIVER;
 
 void (* const TasmotaCommand[])(void) PROGMEM = {
@@ -45,6 +48,9 @@ void (* const TasmotaCommand[])(void) PROGMEM = {
 #ifdef USE_I2C
   &CmndI2cScan, CmndI2cDriver,
 #endif
+#ifdef USE_DEVICE_GROUPS
+  &CmndDevGroupShare,
+#endif  // USE_DEVICE_GROUPS
   &CmndSensor, &CmndDriver };
 
 const char kWifiConfig[] PROGMEM =
@@ -449,13 +455,13 @@ void CmndStatus(void)
 #if defined(USE_TIMERS) && defined(USE_SUNRISE)
     Response_P(PSTR("{\"" D_CMND_STATUS D_STATUS7_TIME "\":{\"" D_JSON_UTC_TIME "\":\"%s\",\"" D_JSON_LOCAL_TIME "\":\"%s\",\"" D_JSON_STARTDST "\":\"%s\",\""
                           D_JSON_ENDDST "\":\"%s\",\"" D_CMND_TIMEZONE "\":%s,\"" D_JSON_SUNRISE "\":\"%s\",\"" D_JSON_SUNSET "\":\"%s\"}}"),
-                          GetTime(0).c_str(), GetTime(1).c_str(), GetTime(2).c_str(),
-                          GetTime(3).c_str(), stemp, GetSun(0).c_str(), GetSun(1).c_str());
+                          GetDateAndTime(DT_UTC).c_str(), GetDateAndTime(DT_LOCALNOTZ).c_str(), GetDateAndTime(DT_DST).c_str(),
+                          GetDateAndTime(DT_STD).c_str(), stemp, GetSun(0).c_str(), GetSun(1).c_str());
 #else
     Response_P(PSTR("{\"" D_CMND_STATUS D_STATUS7_TIME "\":{\"" D_JSON_UTC_TIME "\":\"%s\",\"" D_JSON_LOCAL_TIME "\":\"%s\",\"" D_JSON_STARTDST "\":\"%s\",\""
                           D_JSON_ENDDST "\":\"%s\",\"" D_CMND_TIMEZONE "\":%s}}"),
-                          GetTime(0).c_str(), GetTime(1).c_str(), GetTime(2).c_str(),
-                          GetTime(3).c_str(), stemp);
+                          GetDateAndTime(DT_UTC).c_str(), GetDateAndTime(DT_LOCALNOTZ).c_str(), GetDateAndTime(DT_DST).c_str(),
+                          GetDateAndTime(DT_STD).c_str(), stemp);
 #endif  // USE_TIMERS and USE_SUNRISE
     MqttPublishPrefixTopic_P(option, PSTR(D_CMND_STATUS "7"));
   }
@@ -1663,6 +1669,17 @@ void CmndI2cDriver(void)
   ResponseJsonEnd();
 }
 #endif  // USE_I2C
+
+#ifdef USE_DEVICE_GROUPS
+void CmndDevGroupShare(void)
+{
+  uint32_t parm[2] = { Settings.device_group_share_in, Settings.device_group_share_out };
+  ParseParameters(2, parm);
+  Settings.device_group_share_in = parm[0];
+  Settings.device_group_share_out = parm[1];
+  Response_P(PSTR("{\"" D_CMND_DEVGROUP_SHARE "\":{\"In\":\"%X\",\"Out\":\"%X\"}}"), Settings.device_group_share_in, Settings.device_group_share_out);
+}
+#endif  // USE_DEVICE_GROUPS
 
 void CmndSensor(void)
 {
